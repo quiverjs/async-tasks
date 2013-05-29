@@ -6,7 +6,7 @@
   },
   "name": "quiver-async-tasks",
   "desription": "Async control flow library similar to caolan/async",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/quiverjs/async-tasks",
   "repository": {
     "url": "git@github.com:quiverjs/async-tasks.git"

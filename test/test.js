@@ -1,11 +1,12 @@
 
 var should = require('should')
+var error = require('quiver-error').error
 var async = require('../lib/async-tasks')
 
 describe('async parallel tests', function() {
   var createTasks = function() {
     var task1 = function(callback) {
-      callback('first error', 'first result')
+      callback(error(500, 'first error'), 'first result')
     }
 
     var parallelCallbacks = []
@@ -36,7 +37,7 @@ describe('async parallel tests', function() {
     }, function(err, results) {
       should.exist(err)
 
-      err.previousError.first.previousError.should.equal('first error')
+      err.previousError.first.errorMessage.should.equal('first error')
 
       results.first.should.equal('first result')
       results.second.should.equal('second result')
@@ -54,7 +55,7 @@ describe('async parallel tests', function() {
 
       should.exist(err)
 
-      err.previousError[0].previousError.should.equal('first error')
+      err.previousError[0].errorMessage.should.equal('first error')
 
       results[0].should.equal('first result')
       results[1].should.equal('second result')
@@ -83,7 +84,7 @@ describe('async series test', function() {
     }
 
     var task3 = function(callback) {
-      callback('third error')
+      callback(error(500, 'third error'))
     }
 
     return [task1, task2, task3]
@@ -99,7 +100,7 @@ describe('async series test', function() {
     }, function(err, results) {
       should.exist(err)
 
-      err.previousError.third.previousError.should.equal('third error')
+      err.previousError.third.errorMessage.should.equal('third error')
 
       results.first.should.equal('first result')
       results.second.should.equal('second result')
@@ -115,7 +116,7 @@ describe('async series test', function() {
     async.seriesArray(tasks, function(err, results) {
       should.exist(err)
 
-      err.previousError[2].previousError.should.equal('third error')
+      err.previousError[2].errorMessage.should.equal('third error')
 
       results[0].should.equal('first result')
       results[1].should.equal('second result')
